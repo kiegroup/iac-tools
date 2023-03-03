@@ -26,6 +26,8 @@ MAIN_PATH        := cmd/main.go
 
 METADATA_PATH               := github.com/kiegroup/iac-tools/packages/iac-cli/pkg/metadata
 SET_ENV_PARAMETER           := $(METADATA_PATH).EnvParameter=$(ENV_PARAMETER)
+#SET_VERSION                 := $(METADATA_PATH).PluginVersion=$(PLUGIN_VERSION)
+SET_VERSION                   := $(METADATA_PATH).PluginVersion=0.0.0
 LDFLAGS                     := "-X $(SET_ENV_PARAMETER)"
 
 ARCH := $(shell uname -m)

@@ -14,26 +14,6 @@
  * limitations under the License.
  */
 
-package main
+package metadata
 
-import (
-	"fmt"
-	"github.com/kiegroup/iac-tools/packages/iac-cli/pkg/root"
-	"os"
-
-	"github.com/kiegroup/iac-tools/packages/iac-cli/pkg/metadata"
-)
-
-func main() {
-	//fmt.Println("It works")
-	//fmt.Print("static env value: ")
-	//fmt.Println(metadata.STATIC_SAMPLE)
-	//fmt.Print("npm env parameter: ")
-	//fmt.Println(metadata.EnvParameter)
-	if err := root.NewRootCommand(root.RootCmdConfig{Name: "iac", Version: metadata.PluginVersion}).Execute(); err != nil {
-		if err.Error() != "subcommand is required" {
-			fmt.Fprintln(os.Stderr, err)
-		}
-		os.Exit(1)
-	}
-}
+var PluginVersion string
