@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package main
+package common
 
 import (
 	"fmt"
-	"github.com/kiegroup/iac-tools/packages/iac-cli/pkg/root"
-	"os"
-
-	"github.com/kiegroup/iac-tools/packages/iac-cli/pkg/metadata"
+	"github.com/spf13/cobra"
+	"html/template"
 )
 
-func main() {
-	//fmt.Println("It works")
-	//fmt.Print("static env value: ")
-	//fmt.Println(metadata.STATIC_SAMPLE)
-	//fmt.Print("npm env parameter: ")
-	//fmt.Println(metadata.EnvParameter)
-	if err := root.NewRootCommand(root.RootCmdConfig{Name: "iac", Version: metadata.PluginVersion}).Execute(); err != nil {
-		if err.Error() != "subcommand is required" {
-			fmt.Fprintln(os.Stderr, err)
-		}
-		os.Exit(1)
+func GetTemplate(cmd *cobra.Command, name string) *template.Template {
+	var (
+		body = cmd.Long + "\n\n" + cmd.UsageString()
+		t    = template.New(name)
+		tpl  = template.Must(t.Parse(body))
+	)
+	return tpl
+}
+
+func DefaultTemplatedHelp(cmd *cobra.Command, args []string) {
+	tpl := GetTemplate(cmd, "help")
+	var data = struct{ Name string }{Name: cmd.Root().Use}
+
+	if err := tpl.Execute(cmd.OutOrStdout(), data); err != nil {
+		fmt.Fprintf(cmd.ErrOrStderr(), "unable to display help text: %v", err)
 	}
 }

@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package main
+package common
 
 import (
-	"fmt"
-	"github.com/kiegroup/iac-tools/packages/iac-cli/pkg/root"
-	"os"
-
-	"github.com/kiegroup/iac-tools/packages/iac-cli/pkg/metadata"
+	"github.com/ory/viper"
+	"github.com/spf13/cobra"
 )
 
-func main() {
-	//fmt.Println("It works")
-	//fmt.Print("static env value: ")
-	//fmt.Println(metadata.STATIC_SAMPLE)
-	//fmt.Print("npm env parameter: ")
-	//fmt.Println(metadata.EnvParameter)
-	if err := root.NewRootCommand(root.RootCmdConfig{Name: "iac", Version: metadata.PluginVersion}).Execute(); err != nil {
-		if err.Error() != "subcommand is required" {
-			fmt.Fprintln(os.Stderr, err)
+type bindPlan func(*cobra.Command, []string) error
+
+func BindEnv(flags ...string) bindPlan {
+	return func(cmd *cobra.Command, args []string) (err error) {
+		for _, flag := range flags {
+			if err = viper.BindPFlag(flag, cmd.Flags().Lookup(flag)); err != nil {
+				return
+			}
 		}
-		os.Exit(1)
+		return
 	}
 }
